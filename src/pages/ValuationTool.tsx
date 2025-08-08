@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { useForm, Controller, FormProvider, useFormContext } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -732,6 +733,7 @@ const Step7Contact: React.FC = () => {
 };
 
 const ValuationTool: React.FC = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<DiamondFormValues>();
   const [estimatedValue, setEstimatedValue] = useState<number | null>(null);
@@ -1097,12 +1099,18 @@ const ValuationTool: React.FC = () => {
                       </div>
                       
                       <div className="flex space-x-4">
-                        <a href="/dashboard" className="btn btn-primary">
+                        <button 
+                          onClick={() => navigate('/dashboard')}
+                          className="btn btn-primary"
+                        >
                           Track Your Request
-                        </a>
-                        <a href="/valuation-results" className="btn btn-secondary">
+                        </button>
+                        <button 
+                          onClick={() => navigate('/valuation-results')}
+                          className="btn btn-secondary"
+                        >
                           View Sample Results
-                        </a>
+                        </button>
                         <button 
                           onClick={() => {
                             setShowEstimate(false);
@@ -1124,7 +1132,7 @@ const ValuationTool: React.FC = () => {
           {!showEstimate && (
             <div className="mt-8 text-center text-sm text-gray-500">
               <p>
-                Need help with the valuation form? <a href="/contact" className="text-luxury-gold hover:underline">Contact our experts</a>.
+                Need help with the valuation form? <button onClick={() => navigate('/contact')} className="text-luxury-gold hover:underline bg-transparent border-none cursor-pointer">Contact our experts</button>.
               </p>
             </div>
           )}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 interface CustomerValuationRequest {
@@ -37,6 +38,7 @@ interface CustomerNotification {
 
 const CustomerDashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedRequest, setSelectedRequest] = useState<CustomerValuationRequest | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -219,12 +221,18 @@ const CustomerDashboard: React.FC = () => {
                 <p className="text-gray-600">Welcome back, {user?.name}!</p>
               </div>
               <div className="flex items-center space-x-4">
-                <a href="/valuation" className="btn btn-primary">
+                <button 
+                  onClick={() => navigate('/valuation')}
+                  className="btn btn-primary"
+                >
                   New Valuation Request
-                </a>
-                <a href="/communication" className="btn btn-secondary">
+                </button>
+                <button 
+                  onClick={() => navigate('/communication')}
+                  className="btn btn-secondary"
+                >
                   Messages
-                </a>
+                </button>
                 <div className="relative">
                   <span className="text-2xl">🔔</span>
                   {unreadCount > 0 && (
@@ -381,9 +389,12 @@ const CustomerDashboard: React.FC = () => {
             <div className="bg-white rounded-lg shadow-sm">
               <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                 <h3 className="text-lg font-semibold">My Valuation Requests</h3>
-                <a href="/valuation" className="btn btn-primary">
+                <button 
+                  onClick={() => navigate('/valuation')}
+                  className="btn btn-primary"
+                >
                   New Request
-                </a>
+                </button>
               </div>
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
