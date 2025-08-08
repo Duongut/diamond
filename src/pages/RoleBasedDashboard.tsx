@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import AdminDashboard from './AdminDashboard';
 import StaffDashboard from './StaffDashboard';
+import CustomerDashboard from './CustomerDashboard';
 import DashboardPage from './DashboardPage';
 
 const RoleBasedDashboard: React.FC = () => {
@@ -31,6 +32,8 @@ const RoleBasedDashboard: React.FC = () => {
       return <StaffDashboard />;
     
     case 'customer':
+      return <CustomerDashboard />;
+    
     default:
       return <DashboardPage />;
   }

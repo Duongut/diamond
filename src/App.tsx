@@ -18,6 +18,8 @@ const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const RoleBasedDashboard = lazy(() => import('./pages/RoleBasedDashboard'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const FAQPage = lazy(() => import('./pages/FAQPage'));
+const ValuationResults = lazy(() => import('./pages/ValuationResults'));
+const CustomerCommunication = lazy(() => import('./pages/CustomerCommunication'));
 
 // Loading component
 const Loading = () => (
@@ -115,6 +117,22 @@ function App() {
                 element={
                   <MainLayout>
                     <FAQPage />
+                  </MainLayout>
+                } 
+              />
+              <Route 
+                path="/valuation-results" 
+                element={
+                  <MainLayout>
+                    <ValuationResults />
+                  </MainLayout>
+                } 
+              />
+              <Route 
+                path="/communication" 
+                element={
+                  <MainLayout>
+                    <CustomerCommunication />
                   </MainLayout>
                 } 
               />

@@ -792,13 +792,16 @@ const ValuationTool: React.FC = () => {
     setCurrentStep((prev) => prev - 1);
   };
   
-  // Submit function
+  // Submit function - Enhanced to create actual valuation request
   const onSubmit = (data: DiamondFormValues) => {
     setFormData(data);
     setIsSubmitting(true);
     
-    // Mock calculation for estimate (would be replaced by actual API call)
+    // Create valuation request in the system
     setTimeout(() => {
+      // Generate unique request ID
+      const requestId = `VAL-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`;
+      
       // Simple mock calculation for demo purposes
       const caratWeight = parseFloat(data.caratWeight) || 0;
       let basePrice = 0;
@@ -846,6 +849,69 @@ const ValuationTool: React.FC = () => {
       }
       
       const estimatedValue = Math.round(pricePerCarat * caratWeight * clarityMultiplier * cutMultiplier);
+      
+      // Create the valuation request object
+      const newValuationRequest = {
+        id: requestId,
+        customerName: data.fullName,
+        customerEmail: data.email,
+        customerPhone: data.phone,
+        submittedDate: new Date().toISOString().split('T')[0],
+        status: 'new_request' as const,
+        priority: 'normal' as const,
+        diamondType: `${data.shape} Cut`,
+        caratWeight: `${data.caratWeight}ct`,
+        estimatedValue: `$${estimatedValue.toLocaleString()}`,
+        notes: 'Customer valuation request submitted through online form',
+        customerNotes: data.additionalNotes || 'No additional notes provided',
+        preferredContact: data.preferredContact,
+        diamondDetails: {
+          shape: data.shape,
+          caratWeight: parseFloat(data.caratWeight),
+          color: data.color,
+          clarity: data.clarity,
+          cut: data.cut,
+          polish: data.polish,
+          symmetry: data.symmetry,
+          fluorescence: data.fluorescence,
+          hasInclusions: data.hasInclusions,
+          hasSettings: data.hasSettings,
+          settingMaterial: data.settingMaterial,
+          certificateNumber: data.certificateNumber,
+          certificateType: data.certificateType,
+          origin: data.origin,
+          measurements: data.length && data.width && data.depth ? {
+            length: parseFloat(data.length),
+            width: parseFloat(data.width),
+            depth: parseFloat(data.depth)
+          } : undefined
+        },
+        communicationLog: [{
+          date: new Date().toISOString().split('T')[0],
+          type: 'system' as const,
+          from: 'System',
+          message: `Valuation request submitted online by ${data.fullName}`
+        }],
+        timeline: [{
+          date: new Date().toISOString().split('T')[0],
+          status: 'new_request' as const,
+          user: data.fullName,
+          notes: 'Initial valuation request submitted through online form'
+        }]
+      };
+      
+      // In a real application, you would send this to your backend API
+      // For now, we'll store it in localStorage to simulate the request creation
+      try {
+        const existingRequests = JSON.parse(localStorage.getItem('customerValuationRequests') || '[]');
+        existingRequests.push(newValuationRequest);
+        localStorage.setItem('customerValuationRequests', JSON.stringify(existingRequests));
+        
+        console.log('Valuation request created:', newValuationRequest);
+      } catch (error) {
+        console.error('Error saving valuation request:', error);
+      }
+      
       setEstimatedValue(estimatedValue);
       setIsSubmitting(false);
       setShowEstimate(true);
@@ -1020,18 +1086,32 @@ const ValuationTool: React.FC = () => {
                     <div className="text-left">
                       <h3 className="text-lg font-bold mb-2">Next Steps</h3>
                       <p className="text-sm text-gray-600 mb-4">
-                        A member of our team will contact you shortly at {formData?.email} to discuss your valuation 
-                        and schedule an appointment if needed.
+                        Your valuation request has been submitted successfully! A member of our team will contact you at {formData?.email} within 24 hours.
                       </p>
+                      
+                      <div className="bg-green-50 p-4 rounded-lg mb-4">
+                        <h4 className="font-medium text-green-800 mb-2">✅ Request Submitted Successfully</h4>
+                        <p className="text-sm text-green-700">
+                          Reference ID: VAL-{new Date().getFullYear()}-{String(Date.now()).slice(-6)}
+                        </p>
+                      </div>
+                      
                       <div className="flex space-x-4">
                         <a href="/dashboard" className="btn btn-primary">
                           Track Your Request
                         </a>
+                        <a href="/valuation-results" className="btn btn-secondary">
+                          View Sample Results
+                        </a>
                         <button 
-                          onClick={() => setShowEstimate(false)}
+                          onClick={() => {
+                            setShowEstimate(false);
+                            setCurrentStep(1);
+                            setFormData(undefined);
+                          }}
                           className="btn btn-secondary"
                         >
-                          Revise Details
+                          New Request
                         </button>
                       </div>
                     </div>
